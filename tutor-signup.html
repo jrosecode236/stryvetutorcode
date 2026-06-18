@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Become a Tutor — Stryde</title>
+  <link rel="stylesheet" href="styles-warm.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── PAGE-SPECIFIC STYLES ── */
+    .tutor-hero {
+      background: linear-gradient(135deg, #131F11 0%, #1C2B19 50%, #131F11 100%);
+      padding: 72px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .tutor-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(74,103,65,0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .tutor-hero-badge {
+      display: inline-block;
+      background: rgba(74,103,65,0.25);
+      border: 1px solid rgba(165,180,252,0.4);
+      color: #A8C4A3;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .tutor-hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .tutor-hero p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.65);
+      max-width: 500px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+    .tutor-hero-perks {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero-perk-pill {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* EARNINGS BANNER */
+    .earnings-banner {
+      background: linear-gradient(135deg, #EBF0E8, #EBF0E8);
+      border: 1.5px solid #C2D4BE;
+      border-radius: 20px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      max-width: 760px;
+      margin: 0 auto 36px;
+    }
+    .earnings-icon { font-size: 2.5rem; flex-shrink: 0; }
+    .earnings-text h3 { font-size: 1.05rem; font-weight: 700; color: #0F172A; margin-bottom: 4px; }
+    .earnings-text p { font-size: 0.875rem; color: #475569; line-height: 1.5; }
+    .earnings-num {
+      margin-left: auto;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .earnings-num strong { display: block; font-size: 2rem; font-weight: 900; color: #4A6741; }
+    .earnings-num span { font-size: 0.8rem; color: #64748B; }
+
+    /* MULTI-STEP FORM */
+    .form-page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    /* STEP PROGRESS */
+    .step-progress {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 40px;
+    }
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      position: relative;
+    }
+    .progress-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: calc(50% + 18px);
+      right: calc(-50% + 18px);
+      height: 2px;
+      background: #E2E8F0;
+      z-index: 0;
+    }
+    .progress-step.done::after { background: #4A6741; }
+    .progress-step.active::after { background: linear-gradient(90deg, #4A6741, #E2E8F0); }
+
+    .step-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem;
+      background: #E2E8F0;
+      color: #94A3B8;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s;
+      border: 2px solid #E2E8F0;
+    }
+    .progress-step.active .step-dot {
+      background: #4A6741;
+      color: #fff;
+      border-color: #4A6741;
+      box-shadow: 0 0 0 4px rgba(74,103,65,0.15);
+    }
+    .progress-step.done .step-dot {
+      background: #4A6741;
+      color: #fff;
+      border-color: #4A6741;
+    }
+    .step-dot-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #94A3B8;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .progress-step.active .step-dot-label { color: #4A6741; }
+    .progress-step.done .step-dot-label { color: #4A6741; }
+
+    /* FORM CARD */
+    .form-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 40px 40px;
+      border: 1px solid rgba(74,103,65,0.08);
+      box-shadow: 0 4px 30px rgba(74,103,65,0.07);
+    }
+    .form-card-header { margin-bottom: 28px; }
+    .form-card-header h2 { font-size: 1.35rem; font-weight: 800; color: #0F172A; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .form-card-header p { font-size: 0.875rem; color: #64748B; }
+
+    /* STEP PANELS */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    /* PHOTO UPLOAD */
+    .photo-upload {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      border: 2px dashed #C2D4BE;
+      border-radius: 16px;
+      background: #F8FAFF;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 6px;
+    }
+    .photo-upload:hover { border-color: #4A6741; background: #EBF0E8; }
+    .photo-preview {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4A6741, #4A6741);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; color: #fff; font-weight: 700;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-upload-text strong { display: block; font-size: 0.9rem; font-weight: 600; color: #0F172A; margin-bottom: 2px; }
+    .photo-upload-text span { font-size: 0.8rem; color: #94A3B8; }
+    #photoInput { display: none; }
+
+    /* AVAILABILITY GRID */
+    .avail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 8px;
+    }
+    .avail-chip {
+      padding: 10px 6px;
+      border-radius: 10px;
+      border: 1.5px solid #E2E8F0;
+      background: #F8FAFF;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #475569;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .avail-chip:hover { border-color: #A8C4A3; color: #4A6741; background: #EBF0E8; }
+    .avail-chip.selected { background: #EBF0E8; border-color: #4A6741; color: #4A6741; }
+
+    /* NAV BUTTONS */
+    .form-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      gap: 12px;
+    }
+    .btn-back {
+      background: #F1F5F9;
+      border: none;
+      color: #475569;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-back:hover { background: #E2E8F0; }
+    .btn-next {
+      background: linear-gradient(135deg, #4A6741, #4A6741);
+      color: #fff;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(74,103,65,0.3);
+      transition: all 0.2s;
+      margin-left: auto;
+    }
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(74,103,65,0.4); }
+
+    /* TEXTAREA */
+    .form-group textarea {
+      padding: 12px 14px;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: #0F172A;
+      background: #fff;
+      resize: vertical;
+      min-height: 110px;
+      font-family: inherit;
+      line-height: 1.6;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .form-group textarea:focus {
+      border-color: #4A6741;
+      box-shadow: 0 0 0 3px rgba(74,103,65,0.12);
+    }
+    .char-count {
+      font-size: 0.75rem;
+      color: #94A3B8;
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    /* RATE PREVIEW */
+    .rate-preview {
+      background: #EBF0E8;
+      border: 1.5px solid #BBF7D0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: #16A34A;
+      font-weight: 500;
+    }
+    .rate-preview strong { font-weight: 700; }
+
+    /* SUCCESS STATE */
+    .success-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .success-anim {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #10B981, #06B6D4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 24px rgba(16,185,129,0.35);
+    }
+    .success-screen h2 { font-size: 1.6rem; font-weight: 800; color: #0F172A; margin-bottom: 10px; }
+    .success-screen p { color: #64748B; font-size: 0.95rem; line-height: 1.7; margin-bottom: 28px; max-width: 380px; margin-left: auto; margin-right: auto; }
+    .success-steps {
+      background: #F8FAFF;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .success-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #E2E8F0;
+      font-size: 0.875rem;
+      color: #374151;
+    }
+    .success-step:last-child { border-bottom: none; }
+    .success-step-num {
+      width: 24px; height: 24px;
+      background: #EBF0E8;
+      color: #4A6741;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* SOCIAL PROOF */
+    .social-proof {
+      background: #fff;
+      border-top: 1px solid #E2E8F0;
+      padding: 48px 24px;
+    }
+    .social-proof-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .social-proof h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .tutor-quotes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .tutor-quote {
+      background: #F8FAFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .tutor-quote p { font-size: 0.875rem; color: #475569; line-height: 1.6; margin-bottom: 14px; font-style: italic; }
+    .tq-author { display: flex; align-items: center; gap: 10px; }
+    .tq-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .tq-name { font-size: 0.85rem; font-weight: 700; color: #0F172A; }
+    .tq-sub { font-size: 0.75rem; color: #94A3B8; }
+
+    @media (max-width: 600px) {
+      .form-card { padding: 28px 20px; }
+      .earnings-banner { flex-direction: column; align-items: flex-start; }
+      .earnings-num { margin-left: 0; }
+      .step-dot-label { display: none; }
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <!-- NAV -->
+  <nav class="navbar navbar-light">
+    <a href="index.html" class="nav-logo">Stryde</a>
+    <div class="nav-links">
+      <a href="browse.html">Find Tutors</a>
+      <a href="signup.html" class="btn btn-outline-nav">Student Sign Up</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="tutor-hero">
+    <div class="tutor-hero-badge">💰 Tutors earn up to $85/hr on Stryde</div>
+    <h1>Teach on your<br /><span class="gradient-text">own terms.</span></h1>
+    <p>Set your rate, choose your subjects, pick your hours. Join 500+ tutors already earning with Stryde.</p>
+    <div class="tutor-hero-perks">
+      <span class="hero-perk-pill">⏰ Flexible schedule</span>
+      <span class="hero-perk-pill">💳 Weekly payouts</span>
+      <span class="hero-perk-pill">🔒 Safe platform</span>
+      <span class="hero-perk-pill">📈 Grow your student base</span>
+    </div>
+  </div>
+
+  <!-- FORM AREA -->
+  <div class="form-page-wrap">
+
+    <!-- EARNINGS BANNER -->
+    <div class="earnings-banner">
+      <div class="earnings-icon">💵</div>
+      <div class="earnings-text">
+        <h3>What could you earn?</h3>
+        <p>Tutors on Stryde set their own rates. Most earn between $30–$85/hr. With just 10 sessions a week, that's real income.</p>
+      </div>
+      <div class="earnings-num">
+        <strong>$1,400</strong>
+        <span>avg. / month</span>
+      </div>
+    </div>
+
+    <!-- STEP PROGRESS -->
+    <div class="step-progress" id="stepProgress">
+      <div class="progress-step active" id="prog-1">
+        <div class="step-dot">1</div>
+        <span class="step-dot-label">Account</span>
+      </div>
+      <div class="progress-step" id="prog-2">
+        <div class="step-dot">2</div>
+        <span class="step-dot-label">Profile</span>
+      </div>
+      <div class="progress-step" id="prog-3">
+        <div class="step-dot">3</div>
+        <span class="step-dot-label">Subjects</span>
+      </div>
+      <div class="progress-step" id="prog-4">
+        <div class="step-dot">4</div>
+        <span class="step-dot-label">Availability</span>
+      </div>
+      <div class="progress-step" id="prog-5">
+        <div class="step-dot">5</div>
+        <span class="step-dot-label">Confirm</span>
+      </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="form-card">
+
+      <!-- STEP 1: ACCOUNT -->
+      <div class="step-panel active" id="step-1">
+        <div class="form-card-header">
+          <h2>Create your account</h2>
+          <p>Basic login details — takes 30 seconds.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="t1-fname">First name</label>
+              <input type="text" id="t1-fname" placeholder="Jordan" />
+            </div>
+            <div class="form-group">
+              <label for="t1-lname">Last name</label>
+              <input type="text" id="t1-lname" placeholder="Rivera" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="t1-email">Email address</label>
+            <input type="email" id="t1-email" placeholder="jordan@email.com" />
+          </div>
+          <div class="form-group">
+            <label for="t1-pw">Password</label>
+            <div class="input-with-icon">
+              <input type="password" id="t1-pw" placeholder="At least 8 characters" />
+              <button type="button" class="toggle-pw" onclick="togglePassword('t1-pw', this)">👁</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="t1-phone">Phone number <span style="color:#94A3B8;font-weight:400;">(optional)</span></label>
+            <input type="tel" id="t1-phone" placeholder="+1 (555) 000-0000" />
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-next" onclick="goStep(2)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: PROFILE -->
+      <div class="step-panel" id="step-2">
+        <div class="form-card-header">
+          <h2>Build your profile</h2>
+          <p>This is what students will see. Make a great first impression.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+
+          <div class="form-group">
+            <label>Profile photo</label>
+            <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+              <div class="photo-preview" id="photoPreview">+</div>
+              <div class="photo-upload-text">
+                <strong>Upload a photo</strong>
+                <span>JPG or PNG · Max 5MB · Square works best</span>
+              </div>
+            </div>
+            <input type="file" id="photoInput" accept="image/*" onchange="previewPhoto(this)" />
+          </div>
+
+          <div class="form-group">
+            <label for="t2-edu">Highest education level</label>
+            <select id="t2-edu">
+              <option value="" disabled selected>Select level</option>
+              <option>Some College</option>
+              <option>Bachelor's Degree</option>
+              <option>Master's Degree</option>
+              <option>PhD / Doctorate</option>
+              <option>Currently Enrolled (Undergrad)</option>
+              <option>Currently Enrolled (Grad)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="t2-school">School / University</label>
+            <input type="text" id="t2-school" placeholder="e.g. University of Michigan" />
+          </div>
+
+          <div class="form-group">
+            <label for="t2-bio">Bio <span style="color:#94A3B8;font-weight:400;">(tell students about yourself)</span></label>
+            <textarea id="t2-bio" placeholder="e.g. I'm a Math grad student passionate about making calculus click. I've tutored 50+ students and love seeing that 'aha!' moment..." maxlength="400" oninput="updateCharCount(this, 'bio-count')"></textarea>
+            <div class="char-count"><span id="bio-count">0</span>/400</div>
+          </div>
+
+          <div class="form-group">
+            <label for="t2-years">Years of tutoring experience</label>
+            <select id="t2-years">
+              <option value="" disabled selected>Select experience</option>
+              <option>Less than 1 year</option>
+              <option>1–2 years</option>
+              <option>3–5 years</option>
+              <option>5–10 years</option>
+              <option>10+ years</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="goStep(1)">← Back</button>
+          <button class="btn-next" onclick="goStep(3)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: SUBJECTS & RATE -->
+      <div class="step-panel" id="step-3">
+        <div class="form-card-header">
+          <h2>Subjects & rate</h2>
+          <p>Choose what you teach and set your hourly rate.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:22px;">
+
+          <div class="form-group">
+            <label>Subjects you teach</label>
+            <div class="subject-checks">
+              <label class="check-chip"><input type="checkbox" value="Math" /> 📐 Math</label>
+              <label class="check-chip"><input type="checkbox" value="Science" /> 🧪 Science</label>
+              <label class="check-chip"><input type="checkbox" value="English" /> ✍️ English</label>
+              <label class="check-chip"><input type="checkbox" value="History" /> 🌍 History</label>
+              <label class="check-chip"><input type="checkbox" value="Coding" /> 💻 Coding</label>
+              <label class="check-chip"><input type="checkbox" value="SAT/ACT" /> 🧠 SAT / ACT</label>
+              <label class="check-chip"><input type="checkbox" value="Languages" /> 🌐 Languages</label>
+              <label class="check-chip"><input type="checkbox" value="Chemistry" /> 🔬 Chemistry</label>
+              <label class="check-chip"><input type="checkbox" value="Art" /> 🎨 Art</label>
+              <label class="check-chip"><input type="checkbox" value="Music" /> 🎵 Music</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Grade levels you can teach</label>
+            <div class="subject-checks">
+              <label class="check-chip"><input type="checkbox" value="Elementary" /> Elementary (K–5)</label>
+              <label class="check-chip"><input type="checkbox" value="Middle School" /> Middle School</label>
+              <label class="check-chip"><input type="checkbox" value="High School" /> High School</label>
+              <label class="check-chip"><input type="checkbox" value="College" /> College</label>
+              <label class="check-chip"><input type="checkbox" value="Adult" /> Adult Learner</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="t3-rate">Your hourly rate (USD)</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="t3-rate" placeholder="40" min="10" max="200" oninput="updateRatePreview(this)" />
+            </div>
+            <div id="ratePreview" class="rate-preview" style="margin-top:10px;display:none;">
+              <span>💡</span>
+              <span>Students see <strong id="rateDisplay">$40/hr</strong>. Stryde takes a 10% fee — you keep <strong id="keepDisplay">$36/hr</strong>.</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="t3-specialty">Specialty or unique angle <span style="color:#94A3B8;font-weight:400;">(optional)</span></label>
+            <input type="text" id="t3-specialty" placeholder="e.g. AP Calculus, test anxiety coaching, ESL" />
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="goStep(2)">← Back</button>
+          <button class="btn-next" onclick="goStep(4)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: AVAILABILITY -->
+      <div class="step-panel" id="step-4">
+        <div class="form-card-header">
+          <h2>When are you available?</h2>
+          <p>Select all times that generally work for you. You can adjust this later.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:22px;">
+          <div class="form-group">
+            <label class="filter-label">Days</label>
+            <div class="avail-grid" id="daysGrid">
+              <div class="avail-chip" onclick="toggleChip(this)">Monday</div>
+              <div class="avail-chip" onclick="toggleChip(this)">Tuesday</div>
+              <div class="avail-chip" onclick="toggleChip(this)">Wednesday</div>
+              <div class="avail-chip" onclick="toggleChip(this)">Thursday</div>
+              <div class="avail-chip" onclick="toggleChip(this)">Friday</div>
+              <div class="avail-chip" onclick="toggleChip(this)">Saturday</div>
+              <div class="avail-chip" onclick="toggleChip(this)">Sunday</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="filter-label">Time of Day</label>
+            <div class="avail-grid">
+              <div class="avail-chip" onclick="toggleChip(this)">🌅 Early Morning<br/><small style="font-weight:400;color:#94A3B8">6am–9am</small></div>
+              <div class="avail-chip" onclick="toggleChip(this)">☀️ Morning<br/><small style="font-weight:400;color:#94A3B8">9am–12pm</small></div>
+              <div class="avail-chip" onclick="toggleChip(this)">🌤 Afternoon<br/><small style="font-weight:400;color:#94A3B8">12pm–5pm</small></div>
+              <div class="avail-chip" onclick="toggleChip(this)">🌙 Evening<br/><small style="font-weight:400;color:#94A3B8">5pm–10pm</small></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="t4-session">Preferred session length</label>
+            <select id="t4-session">
+              <option value="" disabled selected>Select length</option>
+              <option>30 minutes</option>
+              <option>45 minutes</option>
+              <option>60 minutes (recommended)</option>
+              <option>90 minutes</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="t4-notice">Minimum booking notice</label>
+            <select id="t4-notice">
+              <option value="" disabled selected>Select notice</option>
+              <option>1 hour</option>
+              <option>3 hours</option>
+              <option>12 hours</option>
+              <option>24 hours</option>
+              <option>48 hours</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="goStep(3)">← Back</button>
+          <button class="btn-next" onclick="goStep(5)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: REVIEW & SUBMIT -->
+      <div class="step-panel" id="step-5">
+        <div class="form-card-header">
+          <h2>Almost there!</h2>
+          <p>Review and agree to our tutor terms to submit your application.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+
+          <!-- Summary box -->
+          <div id="reviewSummary" style="background:#F8FAFF;border-radius:16px;padding:20px;font-size:0.875rem;color:#374151;line-height:1.8;border:1.5px solid #E2E8F0;">
+            <!-- Filled dynamically -->
+          </div>
+
+          <div class="form-group">
+            <label for="t5-bg">Background check consent</label>
+            <select id="t5-bg">
+              <option value="" disabled selected>Select option</option>
+              <option value="yes">Yes, I consent to a background check</option>
+              <option value="no">I prefer not to at this time</option>
+            </select>
+            <p style="font-size:0.78rem;color:#94A3B8;margin-top:5px;">Verified tutors get a badge and more bookings. Background checks are free.</p>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label" style="display:flex;gap:10px;align-items:flex-start;font-size:0.875rem;color:#475569;cursor:pointer;">
+              <input type="checkbox" id="t5-terms" style="margin-top:2px;accent-color:#4A6741;" />
+              I agree to Stryde's <a href="#" style="color:#4A6741;font-weight:600;">Tutor Terms of Service</a>, <a href="#" style="color:#4A6741;font-weight:600;">Community Guidelines</a>, and <a href="#" style="color:#4A6741;font-weight:600;">Privacy Policy</a>.
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label" style="display:flex;gap:10px;align-items:flex-start;font-size:0.875rem;color:#475569;cursor:pointer;">
+              <input type="checkbox" id="t5-notify" style="margin-top:2px;accent-color:#4A6741;" checked />
+              Send me tips for setting up a great tutor profile and getting my first booking.
+            </label>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="goStep(4)">← Back</button>
+          <button class="btn-next" onclick="submitTutorForm()" style="padding:12px 40px;">Submit Application ✓</button>
+        </div>
+      </div>
+
+      <!-- STEP 6: SUCCESS -->
+      <div class="step-panel" id="step-6">
+        <div class="success-screen">
+          <div class="success-anim">✓</div>
+          <h2>Application submitted!</h2>
+          <p>Thanks for applying to be a Stryde tutor. Our team reviews every application — we'll email you within <strong>24 hours</strong>.</p>
+          <div class="success-steps">
+            <div class="success-step">
+              <div class="success-step-num">1</div>
+              <div><strong>Application review</strong> — We verify your credentials and background. (24 hrs)</div>
+            </div>
+            <div class="success-step">
+              <div class="success-step-num">2</div>
+              <div><strong>Profile goes live</strong> — Students can find and book you. </div>
+            </div>
+            <div class="success-step">
+              <div class="success-step-num">3</div>
+              <div><strong>First session</strong> — Connect, teach, and get paid weekly. 💳</div>
+            </div>
+          </div>
+          <a href="index.html" class="btn btn-primary btn-lg">Back to Home</a>
+        </div>
+      </div>
+
+    </div><!-- /form-card -->
+  </div><!-- /form-page-wrap -->
+
+  <!-- TUTOR SOCIAL PROOF -->
+  <div class="social-proof" id="socialProof">
+    <div class="social-proof-inner">
+      <h3>Hear from tutors already on Stryde</h3>
+      <div class="tutor-quotes">
+        <div class="tutor-quote">
+          <p>"I set my own hours and rate. I've been tutoring on Stryde for 8 months and it's now my main income."</p>
+          <div class="tq-author">
+            <div class="tq-avatar" style="background:linear-gradient(135deg,#4A6741,#4A6741)">MC</div>
+            <div>
+              <div class="tq-name">Maya C.</div>
+              <div class="tq-sub">Math · $45/hr · 312 sessions</div>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-quote">
+          <p>"The platform handles all the scheduling and payments. I just show up and teach. It couldn't be simpler."</p>
+          <div class="tq-author">
+            <div class="tq-avatar" style="background:linear-gradient(135deg,#4A6741,#4A6741)">DP</div>
+            <div>
+              <div class="tq-name">David P.</div>
+              <div class="tq-sub">Chemistry · $50/hr · 258 sessions</div>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-quote">
+          <p>"I started tutoring part-time during my Masters degree. It paid my rent and gave me teaching experience."</p>
+          <div class="tq-author">
+            <div class="tq-avatar" style="background:linear-gradient(135deg,#D946EF,#4A6741)">IF</div>
+            <div>
+              <div class="tq-name">Imani F.</div>
+              <div class="tq-sub">English · $48/hr · 129 sessions</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer" style="background:#0F172A;">
+    <div class="footer-logo">Stryde</div>
+    <p class="footer-tagline">Learning that moves you forward.</p>
+    <div class="footer-links">
+      <a href="#">About</a>
+      <a href="#">Blog</a>
+      <a href="#">Safety</a>
+      <a href="#">Support</a>
+      <a href="#">Privacy</a>
+    </div>
+    <p class="footer-copy">© 2026 Stryde Inc. All rights reserved.</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    let currentStep = 1;
+    const TOTAL_STEPS = 5;
+
+    function goStep(n) {
+      document.getElementById(`step-${currentStep}`).classList.remove('active');
+      document.getElementById(`prog-${currentStep}`).classList.remove('active');
+      document.getElementById(`prog-${currentStep}`).classList.add('done');
+
+      if (n > currentStep) {
+        // going forward — mark all between as done
+      } else {
+        // going back — unmark
+        for (let i = n; i <= TOTAL_STEPS; i++) {
+          const p = document.getElementById(`prog-${i}`);
+          if (p) { p.classList.remove('done', 'active'); }
+        }
+      }
+
+      currentStep = n;
+      const panel = document.getElementById(`step-${n}`);
+      const prog = document.getElementById(`prog-${n}`);
+      if (panel) panel.classList.add('active');
+      if (prog) prog.classList.add('active');
+
+      if (n === 5) buildReviewSummary();
+
+      // Hide social proof on success
+      if (n === 6) {
+        document.getElementById('socialProof').style.display = 'none';
+        document.getElementById('stepProgress').style.display = 'none';
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function buildReviewSummary() {
+      const name = `${document.getElementById('t1-fname').value} ${document.getElementById('t1-lname').value}`.trim() || 'Not filled';
+      const email = document.getElementById('t1-email').value || 'Not filled';
+      const edu = document.getElementById('t2-edu').value || 'Not filled';
+      const rate = document.getElementById('t3-rate').value ? `$${document.getElementById('t3-rate').value}/hr` : 'Not set';
+      const checkedSubjects = [...document.querySelectorAll('#step-3 .check-chip input:checked')].map(i => i.value).join(', ') || 'None selected';
+      const selectedDays = [...document.querySelectorAll('#daysGrid .avail-chip.selected')].map(c => c.textContent).join(', ') || 'None selected';
+
+      document.getElementById('reviewSummary').innerHTML = `
+        <div style="display:grid;gap:8px;">
+          <div style="display:flex;gap:8px;"><span style="font-weight:600;min-width:120px;color:#64748B;">Name</span><span>${name}</span></div>
+          <div style="display:flex;gap:8px;"><span style="font-weight:600;min-width:120px;color:#64748B;">Email</span><span>${email}</span></div>
+          <div style="display:flex;gap:8px;"><span style="font-weight:600;min-width:120px;color:#64748B;">Education</span><span>${edu}</span></div>
+          <div style="display:flex;gap:8px;"><span style="font-weight:600;min-width:120px;color:#64748B;">Subjects</span><span>${checkedSubjects}</span></div>
+          <div style="display:flex;gap:8px;"><span style="font-weight:600;min-width:120px;color:#64748B;">Rate</span><span>${rate}</span></div>
+          <div style="display:flex;gap:8px;"><span style="font-weight:600;min-width:120px;color:#64748B;">Availability</span><span>${selectedDays}</span></div>
+        </div>
+      `;
+    }
+
+    function submitTutorForm() {
+      const terms = document.getElementById('t5-terms');
+      if (!terms.checked) {
+        terms.style.outline = '2px solid #EF4444';
+        terms.closest('.form-group') && (terms.closest('label').style.color = '#EF4444');
+        alert('Please agree to the Tutor Terms of Service to continue.');
+        return;
+      }
+      // Mark step 5 done, show step 6
+      document.getElementById(`step-5`).classList.remove('active');
+      document.getElementById(`prog-5`).classList.remove('active');
+      document.getElementById(`prog-5`).classList.add('done');
+      document.getElementById(`step-6`).classList.add('active');
+      document.getElementById('socialProof').style.display = 'none';
+      document.getElementById('stepProgress').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleChip(el) {
+      el.classList.toggle('selected');
+    }
+
+    function updateCharCount(el, countId) {
+      document.getElementById(countId).textContent = el.value.length;
+    }
+
+    function updateRatePreview(el) {
+      const rate = parseInt(el.value);
+      const preview = document.getElementById('ratePreview');
+      if (!isNaN(rate) && rate > 0) {
+        preview.style.display = 'flex';
+        document.getElementById('rateDisplay').textContent = `$${rate}/hr`;
+        document.getElementById('keepDisplay').textContent = `$${Math.round(rate * 0.9)}/hr`;
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
+    function previewPhoto(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const preview = document.getElementById('photoPreview');
+        preview.innerHTML = `<img src="${e.target.result}" alt="Photo preview" />`;
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>

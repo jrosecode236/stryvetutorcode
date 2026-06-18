@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In — Stryde</title>
+  <link rel="stylesheet" href="styles-warm.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body class="auth-page">
+
+  <!-- NAV -->
+  <nav class="navbar navbar-light">
+    <a href="index.html" class="nav-logo">Stryde</a>
+    <div class="nav-links">
+      <a href="browse.html">Find Tutors</a>
+    </div>
+  </nav>
+
+  <main class="auth-main">
+    <div class="auth-container">
+
+      <div class="auth-header">
+        <h1>Welcome back</h1>
+        <p>Log in to your Stryde account.</p>
+      </div>
+
+      <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="you@email.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="password" placeholder="Your password" required />
+            <button type="button" class="toggle-pw" onclick="togglePassword('password', this)">👁</button>
+          </div>
+        </div>
+
+        <p id="login-error" style="display:none;color:#EF4444;font-size:0.875rem;font-weight:500;margin-top:4px;"></p>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">Log In</button>
+
+        <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up free</a></p>
+      </form>
+
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="auth-side">
+      <div class="auth-side-content">
+        <div class="auth-side-badge">Welcome back</div>
+        <h2>Pick up right where you left off</h2>
+        <ul class="auth-perks">
+          <li>
+            <span class="perk-icon">📅</span>
+            <div>
+              <strong>Upcoming sessions</strong>
+              <p>See all your scheduled sessions in one place.</p>
+            </div>
+          </li>
+          <li>
+            <span class="perk-icon">💬</span>
+            <div>
+              <strong>Message your tutor</strong>
+              <p>Stay in sync before and after every session.</p>
+            </div>
+          </li>
+          <li>
+            <span class="perk-icon">⭐</span>
+            <div>
+              <strong>Leave a review</strong>
+              <p>Help other students find great tutors.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const _sb = supabase.createClient(
+      'https://zeidlbfznuksqgasjred.supabase.co',
+      'sb_publishable_DnwTmAznAURf0vUcRU06Vg_OtlFJbMZ'
+    );
+
+    // Redirect if already logged in
+    _sb.auth.getUser().then(({ data: { user } }) => {
+      if (user) window.location.href = 'dashboard.html';
+    });
+
+    window.handleLogin = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const errEl = document.getElementById('login-error');
+      errEl.style.display = 'none';
+
+      btn.disabled = true;
+      btn.textContent = 'Logging in…';
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        btn.disabled = false;
+        btn.textContent = 'Log In';
+        errEl.textContent = error.message;
+        errEl.style.display = 'block';
+        return;
+      }
+
+      window.location.href = 'dashboard.html';
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — Stryde</title>
+  <!-- THEME: swap "styles.css" ↔ "styles-minimal.css" to compare -->
+  <link rel="stylesheet" href="styles-warm.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body class="auth-page">
+
+  <!-- NAV -->
+  <nav class="navbar navbar-light">
+    <a href="index.html" class="nav-logo">Stryde</a>
+    <div class="nav-links">
+      <a href="browse.html">Find Tutors</a>
+    </div>
+  </nav>
+
+  <main class="auth-main">
+    <div class="auth-container">
+
+      <!-- ROLE SELECTOR -->
+      <div class="auth-header">
+        <h1>Create your account</h1>
+        <p>Join Stryde and start your learning journey today.</p>
+      </div>
+
+      <!-- ROLE TABS -->
+      <div class="role-selector" id="roleSelector">
+        <button class="role-tab active" data-role="student" onclick="selectRole('student', this)">
+          <span class="role-icon">🎒</span>
+          <span class="role-label">Student / Parent</span>
+          <span class="role-desc">I'm looking for a tutor</span>
+        </button>
+        <button class="role-tab" data-role="tutor" onclick="selectRole('tutor', this)">
+          <span class="role-icon">🎓</span>
+          <span class="role-label">Tutor</span>
+          <span class="role-desc">I want to teach</span>
+        </button>
+      </div>
+
+      <!-- STUDENT FORM -->
+      <form class="auth-form" id="studentForm" onsubmit="handleSignup(event, 'student')">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s-fname">First name</label>
+            <input type="text" id="s-fname" placeholder="Alex" required />
+          </div>
+          <div class="form-group">
+            <label for="s-lname">Last name</label>
+            <input type="text" id="s-lname" placeholder="Johnson" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="s-email">Email address</label>
+          <input type="email" id="s-email" placeholder="alex@email.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="s-password">Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="s-password" placeholder="At least 8 characters" required minlength="8" />
+            <button type="button" class="toggle-pw" onclick="togglePassword('s-password', this)">👁</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="s-grade">Student's grade level</label>
+          <select id="s-grade" required>
+            <option value="" disabled selected>Select grade</option>
+            <option>Kindergarten</option>
+            <option>1st Grade</option>
+            <option>2nd Grade</option>
+            <option>3rd Grade</option>
+            <option>4th Grade</option>
+            <option>5th Grade</option>
+            <option>6th Grade</option>
+            <option>7th Grade</option>
+            <option>8th Grade</option>
+            <option>9th Grade (Freshman)</option>
+            <option>10th Grade (Sophomore)</option>
+            <option>11th Grade (Junior)</option>
+            <option>12th Grade (Senior)</option>
+            <option>College / University</option>
+            <option>Adult Learner</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Subjects of interest</label>
+          <div class="subject-checks">
+            <label class="check-chip"><input type="checkbox" value="math" /> Math</label>
+            <label class="check-chip"><input type="checkbox" value="science" /> Science</label>
+            <label class="check-chip"><input type="checkbox" value="english" /> English</label>
+            <label class="check-chip"><input type="checkbox" value="history" /> History</label>
+            <label class="check-chip"><input type="checkbox" value="coding" /> Coding</label>
+            <label class="check-chip"><input type="checkbox" value="sat" /> SAT / ACT</label>
+            <label class="check-chip"><input type="checkbox" value="languages" /> Languages</label>
+            <label class="check-chip"><input type="checkbox" value="other" /> Other</label>
+          </div>
+        </div>
+
+        <div style="position:relative;z-index:10;margin-top:4px;">
+          <div id="s-terms-box" onclick="toggleTerms('s')" style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px 14px;border-radius:10px;border:2px solid #D8CDBF;background:#fff;user-select:none;">
+            <div id="s-terms-check" style="width:22px;height:22px;border-radius:5px;border:2px solid #C0B4A8;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;"></div>
+            <span style="font-size:0.85rem;color:#3D3935;line-height:1.4;">I agree to Stryde's Terms of Service and Privacy Policy</span>
+          </div>
+          <p id="s-terms-error" style="color:#C0392B;font-size:0.82rem;display:none;margin-top:6px;">Please agree to the terms to continue.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg">Create Student Account</button>
+
+        <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+      </form>
+
+      <!-- TUTOR FORM -->
+      <form class="auth-form hidden" id="tutorForm" onsubmit="handleSignup(event, 'tutor')">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="t-fname">First name</label>
+            <input type="text" id="t-fname" placeholder="Jordan" required />
+          </div>
+          <div class="form-group">
+            <label for="t-lname">Last name</label>
+            <input type="text" id="t-lname" placeholder="Rivera" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="t-email">Email address</label>
+          <input type="email" id="t-email" placeholder="jordan@email.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="t-password">Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="t-password" placeholder="At least 8 characters" required minlength="8" />
+            <button type="button" class="toggle-pw" onclick="togglePassword('t-password', this)">👁</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="t-education">Highest education level</label>
+          <select id="t-education" required>
+            <option value="" disabled selected>Select level</option>
+            <option>Some College</option>
+            <option>Bachelor's Degree</option>
+            <option>Master's Degree</option>
+            <option>PhD / Doctorate</option>
+            <option>Currently Enrolled (Undergrad)</option>
+            <option>Currently Enrolled (Grad)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Subjects you can teach</label>
+          <div class="subject-checks">
+            <label class="check-chip"><input type="checkbox" value="math" /> Math</label>
+            <label class="check-chip"><input type="checkbox" value="science" /> Science</label>
+            <label class="check-chip"><input type="checkbox" value="english" /> English</label>
+            <label class="check-chip"><input type="checkbox" value="history" /> History</label>
+            <label class="check-chip"><input type="checkbox" value="coding" /> Coding</label>
+            <label class="check-chip"><input type="checkbox" value="sat" /> SAT / ACT</label>
+            <label class="check-chip"><input type="checkbox" value="languages" /> Languages</label>
+            <label class="check-chip"><input type="checkbox" value="other" /> Other</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="t-rate">Hourly rate (USD)</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input type="number" id="t-rate" placeholder="35" min="10" max="200" required />
+          </div>
+        </div>
+
+        <div style="position:relative;z-index:10;margin-top:4px;">
+          <div id="t-terms-box" onclick="toggleTerms('t')" style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px 14px;border-radius:10px;border:2px solid #D8CDBF;background:#fff;user-select:none;">
+            <div id="t-terms-check" style="width:22px;height:22px;border-radius:5px;border:2px solid #C0B4A8;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;"></div>
+            <span style="font-size:0.85rem;color:#3D3935;line-height:1.4;">I agree to Stryde's Terms of Service and Privacy Policy</span>
+          </div>
+          <p id="t-terms-error" style="color:#C0392B;font-size:0.82rem;display:none;margin-top:6px;">Please agree to the terms to continue.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg">Create Tutor Account</button>
+
+        <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+      </form>
+
+    </div>
+
+    <!-- SIDE PANEL (desktop) -->
+    <div class="auth-side">
+      <div class="auth-side-content">
+        <div class="auth-side-badge">Why Stryde?</div>
+        <h2>The smarter way to learn</h2>
+        <ul class="auth-perks">
+          <li>
+            <span class="perk-icon">✅</span>
+            <div>
+              <strong>Verified tutors</strong>
+              <p>Every tutor is background-checked and credential-verified.</p>
+            </div>
+          </li>
+          <li>
+            <span class="perk-icon">🔒</span>
+            <div>
+              <strong>Safe & secure</strong>
+              <p>Sessions happen on our secure platform with parent oversight.</p>
+            </div>
+          </li>
+          <li>
+            <span class="perk-icon">💸</span>
+            <div>
+              <strong>No hidden fees</strong>
+              <p>Pay only for the sessions you book. Cancel anytime.</p>
+            </div>
+          </li>
+          <li>
+            <span class="perk-icon">⭐</span>
+            <div>
+              <strong>Satisfaction guarantee</strong>
+              <p>Not happy with your first session? We'll make it right.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SUCCESS MODAL -->
+  <div class="modal-overlay hidden" id="successModal">
+    <div class="modal">
+      <div class="modal-icon">🎉</div>
+      <h2 id="modal-title">You're in!</h2>
+      <p id="modal-body">Your account has been created. Let's find your perfect tutor.</p>
+      <a href="browse.html" class="btn btn-primary btn-lg" id="modal-cta">Browse Tutors</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script>
+    const _sb = supabase.createClient(
+      'https://zeidlbfznuksqgasjred.supabase.co',
+      'sb_publishable_DnwTmAznAURf0vUcRU06Vg_OtlFJbMZ'
+    );
+
+    window.handleSignup = async function(e, role) {
+      e.preventDefault();
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Creating account…';
+
+      let email, password, meta;
+
+      if (role === 'student') {
+        email    = document.getElementById('s-email').value.trim();
+        password = document.getElementById('s-password').value;
+        const subjects = [...document.querySelectorAll('#studentForm input[type=checkbox][value]:checked')]
+          .map(c => c.value);
+        meta = {
+          role: 'student',
+          first_name: document.getElementById('s-fname').value.trim(),
+          last_name:  document.getElementById('s-lname').value.trim(),
+          grade:      document.getElementById('s-grade').value,
+          subjects
+        };
+      } else {
+        email    = document.getElementById('t-email').value.trim();
+        password = document.getElementById('t-password').value;
+        const subjects = [...document.querySelectorAll('#tutorForm input[type=checkbox][value]:checked')]
+          .map(c => c.value);
+        meta = {
+          role: 'tutor',
+          first_name: document.getElementById('t-fname').value.trim(),
+          last_name:  document.getElementById('t-lname').value.trim(),
+          education:  document.getElementById('t-education').value,
+          rate:       document.getElementById('t-rate').value,
+          subjects
+        };
+      }
+
+      // Validate terms
+      const prefix = role === 'student' ? 's' : 't';
+      const termsErr = prefix + '-terms-error';
+      if (!termsState[prefix]) {
+        document.getElementById(termsErr).style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = role === 'student' ? 'Create Student Account' : 'Create Tutor Account';
+        return;
+      }
+      document.getElementById(termsErr).style.display = 'none';
+
+      const { error } = await _sb.auth.signUp({
+        email, password,
+        options: { data: meta }
+      });
+
+      btn.disabled = false;
+      btn.textContent = role === 'student' ? 'Create Student Account' : 'Create Tutor Account';
+
+      if (error) {
+        showAuthError(error.message);
+        return;
+      }
+
+      const modal = document.getElementById('successModal');
+      const title = document.getElementById('modal-title');
+      const body  = document.getElementById('modal-body');
+      const cta   = document.getElementById('modal-cta');
+
+      if (role === 'student') {
+        title.textContent = "You're in! 🎉";
+        body.textContent  = "Check your email to confirm your account, then find your perfect tutor.";
+        cta.textContent   = "Browse Tutors";
+        cta.href          = "browse.html";
+      } else {
+        title.textContent = "Welcome, Tutor! 🎓";
+        body.textContent  = "Check your email to confirm your account. Your profile will be live once verified.";
+        cta.textContent   = "Back to Home";
+        cta.href          = "index.html";
+      }
+
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const termsState = { s: false, t: false };
+
+    function toggleTerms(prefix) {
+      termsState[prefix] = !termsState[prefix];
+      const check = document.getElementById(prefix + '-terms-check');
+      const box   = document.getElementById(prefix + '-terms-box');
+      if (termsState[prefix]) {
+        check.innerHTML = '<svg width="13" height="10" viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#4A6741" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        check.style.background = '#EBF0E8';
+        check.style.borderColor = '#4A6741';
+        box.style.borderColor = '#4A6741';
+      } else {
+        check.innerHTML = '';
+        check.style.background = '#fff';
+        check.style.borderColor = '#C0B4A8';
+        box.style.borderColor = '#D8CDBF';
+      }
+    }
+
+    function selectRole(role, btn) {
+      document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('studentForm').classList.toggle('hidden', role !== 'student');
+      document.getElementById('tutorForm').classList.toggle('hidden', role !== 'tutor');
+    }
+
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+      btn.textContent = input.type === 'password' ? '👁' : '🙈';
+    }
+
+    function showAuthError(msg) {
+      let el = document.getElementById('auth-error');
+      if (!el) {
+        el = document.createElement('p');
+        el.id = 'auth-error';
+        el.style.cssText = 'color:#EF4444;font-size:0.875rem;margin-top:8px;font-weight:500;';
+        document.querySelector('.auth-form:not(.hidden)').prepend(el);
+      }
+      el.textContent = msg;
+    }
+  </script>
+</body>
+</html>

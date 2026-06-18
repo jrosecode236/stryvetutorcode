@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Session — Stryde</title>
+  <link rel="stylesheet" href="styles-warm.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    .booking-main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 720px) {
+      .booking-main { grid-template-columns: 1fr; }
+      .booking-summary { order: -1; }
+    }
+
+    .booking-title { font-size: 1.6rem; font-weight: 800; color: #131310; margin-bottom: 6px; }
+    .booking-sub { color: #A89F97; font-size: 0.9rem; margin-bottom: 32px; }
+
+    /* STEPS */
+    .booking-steps { display: flex; gap: 0; margin-bottom: 36px; }
+    .booking-step {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.8rem; font-weight: 600; color: #C4B9B1;
+    }
+    .booking-step.active { color: #131310; }
+    .booking-step.done { color: #5B8C5A; }
+    .step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #E8E0D8; color: #A89F97;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+    }
+    .booking-step.active .step-num { background: #131310; color: #fff; }
+    .booking-step.done .step-num { background: #5B8C5A; color: #fff; }
+    .step-divider { flex: 1; height: 1px; background: #E8E0D8; margin: 0 10px; max-width: 40px; }
+
+    /* FORM PANELS */
+    .booking-panel { display: none; }
+    .booking-panel.active { display: block; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #131310; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid #E8E0D8; border-radius: 10px;
+      font-size: 0.9rem; color: #131310; background: #fff;
+      font-family: inherit; box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: #131310;
+    }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+
+    /* DATE GRID */
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 480px) { .date-grid { grid-template-columns: repeat(3, 1fr); } }
+    .date-chip {
+      border: 1.5px solid #E8E0D8;
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: #fff;
+      user-select: none;
+    }
+    .date-chip:hover { border-color: #131310; }
+    .date-chip.selected { border-color: #131310; background: #131310; color: #fff; }
+    .date-chip .dc-day { font-size: 0.7rem; color: #A89F97; display: block; }
+    .date-chip.selected .dc-day { color: #C4B9B1; }
+    .date-chip .dc-date { font-size: 1rem; font-weight: 700; display: block; margin-top: 2px; }
+
+    /* TIME GRID */
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .time-chip {
+      border: 1.5px solid #E8E0D8;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.875rem; font-weight: 600;
+      background: #fff;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .time-chip:hover { border-color: #131310; }
+    .time-chip.selected { border-color: #131310; background: #131310; color: #fff; }
+    .time-chip.unavailable { opacity: 0.35; cursor: not-allowed; }
+
+    /* DURATION */
+    .duration-row { display: flex; gap: 8px; margin-bottom: 20px; }
+    .duration-chip {
+      flex: 1; border: 1.5px solid #E8E0D8; border-radius: 10px;
+      padding: 10px; text-align: center; cursor: pointer;
+      font-size: 0.875rem; font-weight: 600; background: #fff;
+      transition: all 0.15s; user-select: none;
+    }
+    .duration-chip:hover { border-color: #131310; }
+    .duration-chip.selected { border-color: #131310; background: #131310; color: #fff; }
+
+    /* NAV BUTTONS */
+    .booking-nav { display: flex; gap: 12px; margin-top: 28px; }
+    .btn-back {
+      padding: 12px 24px; border-radius: 10px;
+      border: 1.5px solid #E8E0D8; background: #fff;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      color: #131310; transition: background 0.15s;
+    }
+    .btn-back:hover { background: #F5F0EA; }
+    .btn-next {
+      flex: 1; padding: 12px 24px; border-radius: 10px;
+      border: none; background: #131310; color: #fff;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-next:hover { background: #2D2B26; }
+    .btn-next:disabled { background: #C4B9B1; cursor: not-allowed; }
+
+    /* SUMMARY CARD */
+    .booking-summary {
+      background: #fff;
+      border: 1.5px solid #E8E0D8;
+      border-radius: 20px;
+      padding: 24px;
+      position: sticky;
+      top: 100px;
+    }
+    .summary-photo {
+      width: 100%; height: 160px;
+      object-fit: cover; object-position: center 20%;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      background: #E8E0D8;
+    }
+    .summary-name { font-size: 1.1rem; font-weight: 800; color: #131310; }
+    .summary-sub { font-size: 0.82rem; color: #A89F97; margin-top: 2px; margin-bottom: 14px; }
+    .summary-divider { border: none; border-top: 1px solid #F0EAE3; margin: 14px 0; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 8px; }
+    .summary-row .label { color: #A89F97; }
+    .summary-row .value { font-weight: 600; color: #131310; }
+    .summary-total { display: flex; justify-content: space-between; font-size: 1rem; font-weight: 800; color: #131310; margin-top: 12px; }
+
+    /* CONFIRMATION */
+    .confirm-box {
+      text-align: center; padding: 40px 20px;
+    }
+    .confirm-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .confirm-title { font-size: 1.5rem; font-weight: 800; color: #131310; margin-bottom: 8px; }
+    .confirm-body { color: #A89F97; font-size: 0.9rem; margin-bottom: 28px; line-height: 1.6; }
+
+    .section-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #A89F97; margin-bottom: 12px; }
+
+    #booking-error { color: #C0392B; font-size: 0.875rem; font-weight: 500; margin-top: 8px; display: none; }
+  </style>
+</head>
+<body class="browse-page">
+
+  <!-- NAV -->
+  <nav class="navbar navbar-light">
+    <a href="index.html" class="nav-logo">Stryde</a>
+    <div class="nav-links">
+      <a href="browse.html">Find Tutors</a>
+      <a href="login.html">Log In</a>
+      <a href="signup.html" class="btn btn-outline-nav nav-signup">Sign Up</a>
+    </div>
+  </nav>
+
+  <main class="booking-main">
+
+    <!-- LEFT: FORM -->
+    <div class="booking-form-col">
+      <h1 class="booking-title">Book a session</h1>
+      <p class="booking-sub">Pick a time that works for you.</p>
+
+      <!-- STEPS -->
+      <div class="booking-steps">
+        <div class="booking-step active" id="step-ind-1">
+          <span class="step-num">1</span> Schedule
+        </div>
+        <div class="step-divider"></div>
+        <div class="booking-step" id="step-ind-2">
+          <span class="step-num">2</span> Details
+        </div>
+        <div class="step-divider"></div>
+        <div class="booking-step" id="step-ind-3">
+          <span class="step-num">3</span> Confirm
+        </div>
+      </div>
+
+      <!-- STEP 1: SCHEDULE -->
+      <div class="booking-panel active" id="panel-1">
+        <div class="section-label">Select a date</div>
+        <div class="date-grid" id="dateGrid"></div>
+
+        <div class="section-label">Select a time</div>
+        <div class="time-grid" id="timeGrid"></div>
+
+        <div class="section-label">Session length</div>
+        <div class="duration-row">
+          <div class="duration-chip selected" data-min="60" onclick="selectDuration(this)">1 hr</div>
+          <div class="duration-chip" data-min="90" onclick="selectDuration(this)">1.5 hrs</div>
+          <div class="duration-chip" data-min="120" onclick="selectDuration(this)">2 hrs</div>
+        </div>
+
+        <p id="booking-error"></p>
+        <div class="booking-nav">
+          <button class="btn-next" id="nextBtn1" onclick="goStep(2)">Continue</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: DETAILS -->
+      <div class="booking-panel" id="panel-2">
+
+        <div style="background:#F5F0EA;border-radius:14px;padding:20px 22px;margin-bottom:24px;">
+          <p style="font-size:0.9rem;color:#6B6560;line-height:1.65;margin:0;">
+            This is more than a tutoring session — it's the start of a real relationship.
+            Help your tutor show up prepared and genuinely connected to <em>you</em>.
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="subject-focus">What do you want to work on?</label>
+          <input type="text" id="subject-focus" placeholder="e.g. I'm struggling with quadratic equations before my exam…" />
+        </div>
+
+        <div class="form-group">
+          <label for="learning-style">How do you learn best?</label>
+          <select id="learning-style">
+            <option value="" disabled selected>Choose one…</option>
+            <option>Step-by-step explanations</option>
+            <option>Real-world examples</option>
+            <option>Practice problems with feedback</option>
+            <option>Visual diagrams and charts</option>
+            <option>Open conversation and questions</option>
+            <option>I'm not sure — let's figure it out together</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="goal">What would make this session a success for you?</label>
+          <textarea id="goal" placeholder="e.g. I want to leave feeling confident about the test, or finally understand why this concept trips me up…" style="min-height:80px;"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Anything you want your tutor to know about you? <span style="color:#A89F97;font-weight:400;">(optional)</span></label>
+          <textarea id="notes" placeholder="Your vibe, what's been hard, what lights you up — anything that helps them show up for you the right way…" style="min-height:80px;"></textarea>
+        </div>
+
+        <p id="booking-error-2" style="color:#C0392B;font-size:0.875rem;font-weight:500;display:none;"></p>
+        <div class="booking-nav">
+          <button class="btn-back" onclick="goStep(1)">Back</button>
+          <button class="btn-next" onclick="goStep(3)">Review booking</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: CONFIRM -->
+      <div class="booking-panel" id="panel-3">
+        <div class="section-label">Booking summary</div>
+
+        <div style="background:#F5F0EA;border-radius:14px;padding:20px;margin-bottom:20px;">
+          <div class="summary-row"><span class="label">Tutor</span><span class="value" id="confirm-tutor">—</span></div>
+          <div class="summary-row"><span class="label">Date</span><span class="value" id="confirm-date">—</span></div>
+          <div class="summary-row"><span class="label">Time</span><span class="value" id="confirm-time">—</span></div>
+          <div class="summary-row"><span class="label">Duration</span><span class="value" id="confirm-duration">—</span></div>
+          <div class="summary-row"><span class="label">Focus</span><span class="value" id="confirm-focus">—</span></div>
+          <div class="summary-row"><span class="label">Learning style</span><span class="value" id="confirm-style">—</span></div>
+          <div class="summary-row"><span class="label">Goal</span><span class="value" id="confirm-goal" style="max-width:180px;text-align:right;">—</span></div>
+          <hr class="summary-divider" />
+          <div class="summary-total"><span>Total</span><span id="confirm-total">—</span></div>
+        </div>
+
+        <div class="form-group">
+          <label>Payment (coming soon)</label>
+          <input type="text" placeholder="💳  Card number" disabled style="opacity:0.5;cursor:not-allowed" />
+        </div>
+
+        <p id="booking-error-3" style="color:#C0392B;font-size:0.875rem;font-weight:500;display:none;margin-bottom:12px;"></p>
+        <div class="booking-nav">
+          <button class="btn-back" onclick="goStep(2)">Back</button>
+          <button class="btn-next" id="confirmBtn" onclick="confirmBooking()">Confirm Booking</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: DONE -->
+      <div class="booking-panel" id="panel-done">
+        <div class="confirm-box">
+          <div class="confirm-icon">🎉</div>
+          <div class="confirm-title">You're booked!</div>
+          <p class="confirm-body">
+            Your session has been requested.<br />
+            <span id="done-tutor"></span> will confirm within <span id="done-response"></span>.
+          </p>
+          <a href="browse.html" class="btn btn-primary btn-lg">Browse more tutors</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: SUMMARY -->
+    <div class="booking-summary">
+      <img id="summary-photo" class="summary-photo" src="" alt="" />
+      <div class="summary-name" id="summary-name">Loading…</div>
+      <div class="summary-sub" id="summary-sub"></div>
+      <hr class="summary-divider" />
+      <div class="summary-row">
+        <span class="label">Rating</span>
+        <span class="value" id="summary-rating">—</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Sessions</span>
+        <span class="value" id="summary-sessions">—</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Rate</span>
+        <span class="value" id="summary-rate">—</span>
+      </div>
+      <hr class="summary-divider" />
+      <div class="summary-row">
+        <span class="label">Selected date</span>
+        <span class="value" id="summary-date">—</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Time</span>
+        <span class="value" id="summary-time">—</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Duration</span>
+        <span class="value" id="summary-duration">1 hr</span>
+      </div>
+      <hr class="summary-divider" />
+      <div class="summary-total">
+        <span>Estimated total</span>
+        <span id="summary-total">—</span>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const _sb = supabase.createClient(
+      'https://zeidlbfznuksqgasjred.supabase.co',
+      'sb_publishable_DnwTmAznAURf0vUcRU06Vg_OtlFJbMZ'
+    );
+
+    function init() {
+    // ── BOOKING STATE ──────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    const tutorId = parseInt(params.get('tutor'));
+    const tutor = window.TUTORS?.find(t => t.id === tutorId);
+
+    let selectedDate = null;
+    let selectedTime = null;
+    let selectedDuration = 60;
+
+    // ── POPULATE SUMMARY ───────────────────────
+    if (tutor) {
+      document.getElementById('summary-photo').src = tutor.photos[0];
+      document.getElementById('summary-photo').alt = tutor.name;
+      document.getElementById('summary-name').textContent = tutor.name;
+      document.getElementById('summary-sub').textContent = `${tutor.subject} · ${tutor.grade}`;
+      document.getElementById('summary-rating').textContent = `${tutor.rating} ★`;
+      document.getElementById('summary-sessions').textContent = tutor.sessions;
+      document.getElementById('summary-rate').textContent = `$${tutor.rate}/hr`;
+      updateTotal();
+    } else {
+      document.getElementById('summary-name').textContent = 'Tutor not found';
+    }
+
+    // ── BUILD DATE CHIPS (next 8 days) ─────────
+    const dateGrid = document.getElementById('dateGrid');
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const today = new Date();
+
+    for (let i = 1; i <= 8; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const chip = document.createElement('div');
+      chip.className = 'date-chip';
+      chip.innerHTML = `<span class="dc-day">${days[d.getDay()]}</span><span class="dc-date">${d.getDate()} ${months[d.getMonth()]}</span>`;
+      chip.dataset.date = d.toISOString().split('T')[0];
+      chip.onclick = () => selectDate(chip);
+      dateGrid.appendChild(chip);
+    }
+
+    // ── BUILD TIME CHIPS ───────────────────────
+    const timeGrid = document.getElementById('timeGrid');
+    const times = ['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM',
+                   '1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM'];
+    times.forEach(t => {
+      const chip = document.createElement('div');
+      chip.className = 'time-chip';
+      chip.textContent = t;
+      chip.onclick = () => selectTime(chip);
+      timeGrid.appendChild(chip);
+    });
+
+    // ── SELECTION HANDLERS ─────────────────────
+    window.selectDate = function(chip) {
+      document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedDate = chip.dataset.date;
+      const d = new Date(selectedDate + 'T00:00:00');
+      const label = `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
+      document.getElementById('summary-date').textContent = label;
+    };
+
+    window.selectTime = function(chip) {
+      if (chip.classList.contains('unavailable')) return;
+      document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedTime = chip.textContent;
+      document.getElementById('summary-time').textContent = selectedTime;
+    };
+
+    window.selectDuration = function(chip) {
+      document.querySelectorAll('.duration-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedDuration = parseInt(chip.dataset.min);
+      document.getElementById('summary-duration').textContent = chip.textContent;
+      updateTotal();
+    };
+
+    function updateTotal() {
+      if (!tutor) return;
+      const hrs = selectedDuration / 60;
+      const total = (tutor.rate * hrs).toFixed(2);
+      document.getElementById('summary-total').textContent = `$${total}`;
+    }
+
+    // ── STEP NAVIGATION ────────────────────────
+    window.goStep = function(step) {
+      if (step === 2) {
+        if (!selectedDate) { showError(1, 'Please select a date.'); return; }
+        if (!selectedTime) { showError(1, 'Please select a time.'); return; }
+        hideError(1);
+      }
+      if (step === 3) {
+        // Populate confirm panel
+        const hrs = selectedDuration / 60;
+        document.getElementById('confirm-tutor').textContent = tutor?.name || '—';
+        const d = new Date(selectedDate + 'T00:00:00');
+        document.getElementById('confirm-date').textContent = `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
+        document.getElementById('confirm-time').textContent = selectedTime;
+        document.getElementById('confirm-duration').textContent = `${hrs} hr${hrs > 1 ? 's' : ''}`;
+        document.getElementById('confirm-focus').textContent = document.getElementById('subject-focus').value || 'Not specified';
+        document.getElementById('confirm-style').textContent = document.getElementById('learning-style').value || 'Not specified';
+        document.getElementById('confirm-goal').textContent = document.getElementById('goal').value || 'Not specified';
+        document.getElementById('confirm-total').textContent = `$${(tutor.rate * hrs).toFixed(2)}`;
+      }
+
+      document.querySelectorAll('.booking-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(`panel-${step}`).classList.add('active');
+
+      // Update step indicators
+      for (let i = 1; i <= 3; i++) {
+        const ind = document.getElementById(`step-ind-${i}`);
+        ind.classList.remove('active', 'done');
+        if (i < step) ind.classList.add('done');
+        else if (i === step) ind.classList.add('active');
+      }
+    };
+
+    // ── CONFIRM BOOKING ────────────────────────
+    window.confirmBooking = async function() {
+      const btn = document.getElementById('confirmBtn');
+      btn.disabled = true;
+      btn.textContent = 'Booking…';
+
+      const { data: { user } } = await _sb.auth.getUser();
+      if (!user) {
+        sessionStorage.setItem('pendingBooking', JSON.stringify({
+          tutorId, date: selectedDate, time: selectedTime,
+          duration: selectedDuration,
+          focus: document.getElementById('subject-focus').value,
+          notes: document.getElementById('notes').value
+        }));
+        window.location.href = `login.html?redirect=booking.html?tutor=${tutorId}`;
+        return;
+      }
+
+      // Build scheduled_at timestamp
+      const [timePart, meridiem] = selectedTime.split(' ');
+      let [h, m] = timePart.split(':').map(Number);
+      if (meridiem === 'PM' && h !== 12) h += 12;
+      if (meridiem === 'AM' && h === 12) h = 0;
+      const scheduledAt = new Date(`${selectedDate}T${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:00`);
+
+      const { error } = await _sb.from('sessions').insert({
+        student_id: user.id,
+        tutor_ref: tutorId,
+        scheduled_at: scheduledAt.toISOString(),
+        duration_min: selectedDuration,
+        subject_focus: document.getElementById('subject-focus').value,
+        notes: document.getElementById('notes').value,
+        status: 'pending'
+      });
+
+      if (error) {
+        btn.disabled = false;
+        btn.textContent = 'Confirm Booking';
+        showError(3, error.message);
+        return;
+      }
+
+      document.getElementById('done-tutor').textContent = tutor?.name || 'Your tutor';
+      document.getElementById('done-response').textContent = tutor?.response || '24 hours';
+      document.querySelectorAll('.booking-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-done').classList.add('active');
+    };
+
+    function showError(step, msg) {
+      const el = step === 1 ? document.getElementById('booking-error')
+               : step === 3 ? document.getElementById('booking-error-3')
+               : document.getElementById('booking-error-2');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function hideError(step) {
+      const el = step === 1 ? document.getElementById('booking-error') : document.getElementById('booking-error-2');
+      el.style.display = 'none';
+    }
+    } // end init()
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>

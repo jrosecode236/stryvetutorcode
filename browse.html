@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Tutors — Stryde</title>
+  <!-- THEME: swap "styles.css" ↔ "styles-minimal.css" to compare -->
+  <link rel="stylesheet" href="styles-warm.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body class="browse-page">
+
+  <!-- NAV -->
+  <nav class="navbar navbar-light">
+    <a href="index.html" class="nav-logo">Stryde</a>
+    <div class="nav-links">
+      <a href="tutor-signup.html">Become a Tutor</a>
+      <a href="login.html">Log In</a>
+      <a href="signup.html" class="btn btn-outline-nav nav-signup">Sign Up</a>
+    </div>
+  </nav>
+
+  <main class="browse-main">
+
+    <!-- FILTER SIDEBAR -->
+    <aside class="filter-sidebar" id="filterSidebar">
+      <div class="filter-header">
+        <h3>Filters</h3>
+        <button class="filter-reset" onclick="resetFilters()">Reset all</button>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Subject</label>
+        <select id="filter-subject" onchange="applyFilters()">
+          <option value="">All subjects</option>
+          <option value="Math">Math</option>
+          <option value="Science">Science</option>
+          <option value="English">English</option>
+          <option value="History">History</option>
+          <option value="Coding">Coding</option>
+          <option value="SAT/ACT">SAT / ACT</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Languages">Languages</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Grade level</label>
+        <select id="filter-grade" onchange="applyFilters()">
+          <option value="">All grades</option>
+          <option value="Elementary">Elementary (K–5)</option>
+          <option value="Middle School">Middle School (6–8)</option>
+          <option value="High School">High School (9–12)</option>
+          <option value="College">College</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Max hourly rate</label>
+        <div class="range-row">
+          <input type="range" id="filter-rate" min="10" max="120" value="120" step="5" oninput="updateRateLabel(this); applyFilters()" />
+          <span class="range-val" id="rate-label">Any</span>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Min rating</label>
+        <div class="star-filter">
+          <button class="star-btn active" data-min="0" onclick="setMinRating(0, this)">All</button>
+          <button class="star-btn" data-min="4" onclick="setMinRating(4, this)">4★+</button>
+          <button class="star-btn" data-min="4.5" onclick="setMinRating(4.5, this)">4.5★+</button>
+          <button class="star-btn" data-min="4.8" onclick="setMinRating(4.8, this)">4.8★+</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="browse-content">
+
+      <!-- TOP BAR -->
+      <div class="browse-topbar">
+        <div class="browse-heading">
+          <h1>Find a tutor</h1>
+          <span class="result-count" id="resultCount">Showing 12 tutors</span>
+        </div>
+        <div class="browse-topbar-right">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search by name or subject…" oninput="applyFilters()" />
+          </div>
+          <button class="filter-toggle-btn" onclick="toggleFilterPanel()">⚙️ Filters</button>
+        </div>
+      </div>
+
+      <!-- TUTOR GRID -->
+      <div class="tutor-grid" id="tutorGrid"></div>
+
+      <!-- EMPTY STATE -->
+      <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon">🔭</div>
+        <h3>No tutors found</h3>
+        <p>Try adjusting your filters or search terms.</p>
+        <button class="btn btn-outline" onclick="resetFilters()">Clear filters</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- TUTOR DETAIL MODAL -->
+  <div class="modal-overlay hidden" id="tutorModal">
+    <div class="modal tutor-modal">
+      <!-- Content injected dynamically by openTutorModal() -->
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script type="module">
+    import { initNav } from './supabase.js';
+    initNav();
+  </script>
+</body>
+</html>
